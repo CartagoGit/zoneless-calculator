@@ -5,6 +5,7 @@ import {
   HostBinding,
   input,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 
@@ -25,6 +26,8 @@ export class CalculatorButtonComponent {
     return typeof value === 'string' ? value !== 'false' : value;
   };
 
+  public isPressed = signal(false);
+
   public onClick = output<string>();
   public contentValue = viewChild<ElementRef<HTMLButtonElement>>('button');
 
@@ -43,6 +46,10 @@ export class CalculatorButtonComponent {
   @HostBinding('class.is-double-size')
   get isDoubleSizeClass() {
     return this.isDoubleSize();
+  }
+  @HostBinding('class.is-pressed')
+  get isPressedClass() {
+    return this.isPressed();
   }
 
   handleClick() {
