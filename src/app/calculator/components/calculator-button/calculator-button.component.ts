@@ -18,6 +18,9 @@ import {
   styleUrls: ['./calculator-button.component.css'],
   host: {
     class: 'w-1/4 border-r border-b border-indigo-400',
+    '[class.is-command]': 'isCommand()',
+    '[class.is-double-size]': 'isDoubleSize()',
+    '[class.is-pressed]': 'isPressed()',
   },
 })
 export class CalculatorButtonComponent {
@@ -37,20 +40,6 @@ export class CalculatorButtonComponent {
   public isDoubleSize = input(false, {
     transform: this._transformBoolean,
   });
-
-  @HostBinding('class.is-command')
-  get isCommandClass() {
-    return this.isCommand();
-  }
-
-  @HostBinding('class.is-double-size')
-  get isDoubleSizeClass() {
-    return this.isDoubleSize();
-  }
-  @HostBinding('class.is-pressed')
-  get isPressedClass() {
-    return this.isPressed();
-  }
 
   handleClick() {
     const content = this.contentValue()?.nativeElement.innerText.trim();
