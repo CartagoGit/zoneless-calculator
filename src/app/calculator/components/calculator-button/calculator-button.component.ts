@@ -3,6 +3,7 @@ import {
   Component,
   HostBinding,
   input,
+  output,
 } from '@angular/core';
 
 @Component({
@@ -21,6 +22,9 @@ export class CalculatorButtonComponent {
   private _transformBoolean = (value: string | boolean) => {
     return typeof value === 'string' ? value !== 'false' : value;
   };
+
+  public onClick = output<string>();
+
   public isCommand = input(false, {
     transform: this._transformBoolean,
   });
@@ -36,5 +40,9 @@ export class CalculatorButtonComponent {
   @HostBinding('class.is-double-size')
   get isDoubleSizeClass() {
     return this.isDoubleSize();
+  }
+
+  handleClick() {
+    console.log('Button clicked');
   }
 }

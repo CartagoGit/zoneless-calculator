@@ -8,4 +8,6 @@ import { CalculatorButtonComponent } from '../calculator-button/calculator-butto
   templateUrl: './calculator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalculatorComponent {}
+export class CalculatorComponent {
+
+}
