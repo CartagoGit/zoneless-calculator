@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   HostBinding,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 
 @Component({
@@ -24,6 +26,7 @@ export class CalculatorButtonComponent {
   };
 
   public onClick = output<string>();
+  public contentValue = viewChild<ElementRef<HTMLButtonElement>>('button');
 
   public isCommand = input(false, {
     transform: this._transformBoolean,
@@ -43,6 +46,8 @@ export class CalculatorButtonComponent {
   }
 
   handleClick() {
-    console.log('Button clicked');
+    const content = this.contentValue()?.nativeElement.innerText.trim();
+    if (!content) return;
+    this.onClick.emit(content);
   }
 }
