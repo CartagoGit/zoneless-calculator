@@ -40,8 +40,8 @@ export class CalculatorService {
 
     // Aplicar operador
     if (operators.includes(value)) {
+      this.subResultText.set(this._calculateResult().toString());
       this.lastOperator.set(value);
-      this.subResultText.set(this.resultText());
       this.resultText.set('0');
       return;
     }
@@ -54,5 +54,19 @@ export class CalculatorService {
       return this.resultText.update((prev) =>
         prev === '0' ? value : prev + value
       );
+  }
+
+  private _calculateResult(): number {
+    const operations: Record<string, (...args: number[]) => number> = {
+      '*': (a: number, b: number) => a * b,
+      '/': (a: number, b: number) => a / b,
+      '+': (a: number, b: number) => a + b,
+      '-': (a: number, b: number) => a - b,
+    };
+
+    return operations[this.lastOperator()](
+      +this.subResultText(),
+      +this.resultText()
+    );
   }
 }
