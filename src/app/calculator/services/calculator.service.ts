@@ -10,27 +10,30 @@ const possibleValues = [...numbers, ...operators, ...specialOperators] as const;
 })
 export class CalculatorService {
   public resultText = signal('0');
-  public subResultText = signal('0');
-  public lastOperator = signal('+');
+  public subResultText = signal('');
+  public lastOperator = signal('');
   private _limitCharacters = 9;
 
   public constructNumber(value: string): void {
-    console.log({ value });
+    // Parseamos el valor de división
+    if (value === '÷') value = '/';
+
     if (!possibleValues.includes(value))
       return console.warn('Invalid value: ', value);
 
+    // Si ya hemos dado un resultado y volvemos a presionar un número, reseteamos los valores
+    if (numbers.includes(value) && this.lastOperator() === '=')
+      this.resetValues();
+
     if (value === '=') {
-      // TODO
-      console.log('Calcular resultado');
+      if (this.lastOperator() === '' || this.lastOperator() === '=') return;
+      this.resultText.set(this._calculateResult().toString());
+      this.subResultText.set('');
+      this.lastOperator.set('=');
       return;
     }
 
-    if (value === 'C') {
-      this.resultText.set('0');
-      this.subResultText.set('0');
-      this.lastOperator.set('+');
-      return;
-    }
+    if (value === 'C') return this.resetValues();
 
     if (value === '+/-') {
       return this.resultText.update((prev) =>
@@ -40,14 +43,30 @@ export class CalculatorService {
 
     if (value === 'backspace') {
       if (this.resultText() === '0') return;
-      if (this.resultText().length === 1) return this.resultText.set('0');
+      if (
+        this.resultText().length === 1 ||
+        (this.resultText().length === 2 && this.resultText()[0] === '-')
+      ) {
+        return this.resultText.set('0');
+      }
       this.resultText.update((prev) => prev.slice(0, -1));
       return;
     }
 
     // Aplicar operador
     if (operators.includes(value)) {
-      this.subResultText.set(this._calculateResult().toString());
+      if (this.lastOperator() === '' || this.lastOperator() === '=') {
+        this.subResultText.set(this.resultText());
+        this.lastOperator.set(value);
+        this.resultText.set('0');
+        return;
+      }
+      const result = this._calculateResult();
+      if (isNaN(result)) {
+        this.resetValues();
+        this.resultText.set(result.toString());
+      }
+      this.subResultText.set(result.toString());
       this.lastOperator.set(value);
       this.resultText.set('0');
       return;
@@ -61,12 +80,14 @@ export class CalculatorService {
     if (value === '.' && !this.resultText().includes('.'))
       return this.resultText.update((prev) => prev + value);
 
+    // Evitar el 0 a la izquierda y añadir el valor
     if (numbers.includes(value))
       return this.resultText.update((prev) =>
         prev === '0' || prev === '-0' ? value : prev + value
       );
   }
 
+  // Retorna el valor de la operación
   private _calculateResult(): number {
     const operations: Record<string, (...args: number[]) => number> = {
       '*': (a: number, b: number) => a * b,
@@ -82,5 +103,12 @@ export class CalculatorService {
 
     // Evitamos el deprecamiento de punto flotante de js
     return parseFloat(result.toFixed(this._limitCharacters));
+  }
+
+  // Resetea los valores
+  public resetValues(): void {
+    this.resultText.set('0');
+    this.subResultText.set('');
+    this.lastOperator.set('');
   }
 }
