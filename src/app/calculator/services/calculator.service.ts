@@ -12,6 +12,7 @@ export class CalculatorService {
   public resultText = signal('0');
   public subResultText = signal('0');
   public lastOperator = signal('+');
+  private _limitCharacters = 9;
 
   public constructNumber(value: string): void {
     console.log({ value });
@@ -31,6 +32,12 @@ export class CalculatorService {
       return;
     }
 
+    if (value === '+/-') {
+      return this.resultText.update((prev) =>
+        prev.startsWith('-') ? prev.slice(1) : '-' + prev
+      );
+    }
+
     if (value === 'backspace') {
       if (this.resultText() === '0') return;
       if (this.resultText().length === 1) return this.resultText.set('0');
@@ -46,13 +53,17 @@ export class CalculatorService {
       return;
     }
 
+    // Limitar cantidad de caracteres
+    if (this.resultText().length > this._limitCharacters)
+      return console.warn('Max length reached');
+
     //Validar si decimal
     if (value === '.' && !this.resultText().includes('.'))
       return this.resultText.update((prev) => prev + value);
 
     if (numbers.includes(value))
       return this.resultText.update((prev) =>
-        prev === '0' ? value : prev + value
+        prev === '0' || prev === '-0' ? value : prev + value
       );
   }
 
@@ -64,9 +75,12 @@ export class CalculatorService {
       '-': (a: number, b: number) => a - b,
     };
 
-    return operations[this.lastOperator()](
+    const result = operations[this.lastOperator()](
       +this.subResultText(),
       +this.resultText()
     );
+
+    // Evitamos el deprecamiento de punto flotante de js
+    return parseFloat(result.toFixed(this._limitCharacters));
   }
 }
