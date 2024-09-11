@@ -28,7 +28,7 @@ export class CalculatorComponent {
   public lastOperator = computed(() => this._calculatorSvc.lastOperator());
 
   handleClick(key: string) {
-    console.log({ key });
+    this._calculatorSvc.constructNumber(key);
   }
 
   handleKeyboardEvent(event: KeyboardEvent) {

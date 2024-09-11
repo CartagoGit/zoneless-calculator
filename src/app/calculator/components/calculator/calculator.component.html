@@ -1,10 +1,12 @@
 <div class="w-screen h-40 bg-gradient-to-b from-gray-800 to-gray-700 flex items-end text-right"
   style="max-width: 300px;">
   <div class="w-full py-5 px-6 text-6xl text-white font-thin">
+    @if(!!subResultText()){
     <span class="text-4xl">
       <span>{{ subResultText() }}</span>
       <span class="ml-2">{{ lastOperator() }}</span>
     </span>
+    }
     <br />
     <span>
       {{ resultText() }}
