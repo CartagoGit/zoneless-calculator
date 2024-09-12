@@ -7,7 +7,9 @@
     "build": "bun run test:integration && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:integration": "ng test --no-watch --browsers=ChromeHeadless --no-progress"
+    "test:integration": "ng test --no-watch --browsers=ChromeHeadless --no-progress",
+    "test:coverage": "ng test --code-coverage",
+    "test:full": "ng test --no-watch --browsers=ChromeHeadless --no-progress --code-coverage"
   },
   "private": true,
   "dependencies": {
