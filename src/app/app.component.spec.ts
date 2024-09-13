@@ -27,4 +27,23 @@ describe('AppComponent', () => {
   it('should render router-outlet', () => {
     expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
+
+  it('should render router-outlet wrapped with classes', () => {
+    const wrapper = compiled.querySelector('div');
+
+    const mustHaveClasses =
+      'min-w-screen min-h-screen bg-slate-600 flex items-center justify-center px-5 py-5'.split(
+        ' '
+      );
+    const wrapperClasses = wrapper?.classList.value.split(' ');
+
+    expect(wrapper).not.toBeNull();
+    // const wrapperClasses = wrapper?.classList.forEach((className) => {
+    //   expect(mustHaveClasses).toContain(className);
+    // });
+
+    mustHaveClasses.forEach((className) => {
+      expect(wrapperClasses).toContain(className);
+    });
+  });
 });
