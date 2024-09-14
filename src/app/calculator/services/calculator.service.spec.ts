@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CalculatorService } from './calculator.service';
 
-describe('Svc => CalculatorService', () => {
+describe('Svc => CalculatorService}', () => {
   let service: CalculatorService;
 
   beforeEach(() => {
@@ -11,5 +11,11 @@ describe('Svc => CalculatorService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should be created with default values', () => {
+    expect(service.resultText()).toBe('0');
+    expect(service.lastOperator()).toBe('');
+    expect(service.subResultText()).toBe('');
   });
 });
