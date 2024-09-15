@@ -212,6 +212,9 @@ describe('Svc => CalculatorService}', () => {
     service.resultText.set('1234567890');
     service.constructNumber('1');
     expect(service.resultText()).toBe('1234567890');
+
+    service.constructNumber('.');
+    expect(service.resultText()).toBe('1234567890');
   });
 
   it('should handle multiple operators correctly', () => {

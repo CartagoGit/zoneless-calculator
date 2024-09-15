@@ -1,9 +1,13 @@
 import { Injectable, signal } from '@angular/core';
-
-const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const operators = ['+', '-', '*', '/'];
-const specialOperators = ['C', '%', '+/-', '=', '.', 'backspace'];
-const possibleValues = [...numbers, ...operators, ...specialOperators] as const;
+import {
+  INumbers,
+  IOperators,
+  isNumber,
+  isOperator,
+  ISpecialOperators,
+  isPossibleValue,
+  isSpecialOperator,
+} from '../constants/calculatos.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -15,19 +19,25 @@ export class CalculatorService {
   private _limitCharacters = 9;
 
   public constructNumber(value: string): void {
-    // Parseamos el valor de división antes de nada
-    if (value === '÷') value = '/';
+    // Validamos que el valor sea válido
+    if (!isPossibleValue(value)) return console.warn('Invalid value: ', value);
 
-    // Validamos que el valor sea correcto
-    if (!possibleValues.includes(value))
-      return console.warn('Invalid value: ', value);
+    if (isSpecialOperator(value)) this._specialValue(value);
+    else if (isOperator(value)) this._operatorValue(value);
+    else if (isNumber(value)) this._numberValue(value);
+  }
 
+  private _isOverLimitLength(): boolean {
+    if (this.resultText().length >= this._limitCharacters) {
+      console.warn('Max length reached');
+      return true;
+    }
+    return false;
+  }
+
+  private _specialValue(value: ISpecialOperators): void {
     // Si se pulsa C nos da igual lo que haya en pantalla, reseteamos los valores
     if (value === 'C') return this.resetValues();
-
-    // Si ya hemos dado un resultado y volvemos a presionar un número, reseteamos los valores
-    if (numbers.includes(value) && this.lastOperator() === '=')
-      this.resetValues();
 
     if (value === '=') {
       if (this.lastOperator() === '' || this.lastOperator() === '=') return;
@@ -68,38 +78,42 @@ export class CalculatorService {
       return;
     }
 
-    // Aplicar operador
-    if (operators.includes(value)) {
-      if (this.lastOperator() === '' || this.lastOperator() === '=') {
-        this.subResultText.set(this.resultText());
-        this.lastOperator.set(value);
-        this.resultText.set('0');
-        return;
-      }
-      const result = this._calculateResult();
-      if (isNaN(result)) {
-        this.resetValues();
-        this.resultText.set(result.toString());
-      }
-      this.subResultText.set(result.toString());
+    //Validar si decimal
+    if (value === '.' && !this.resultText().includes('.')) {
+      // Limitamos el tamaño
+      if (this._isOverLimitLength()) return;
+      return this.resultText.update((prev) => prev + value);
+    }
+  }
+
+  private _operatorValue(value: IOperators): void {
+    if (this.lastOperator() === '' || this.lastOperator() === '=') {
+      this.subResultText.set(this.resultText());
       this.lastOperator.set(value);
       this.resultText.set('0');
       return;
     }
+    const result = this._calculateResult();
+    if (isNaN(result)) {
+      this.resetValues();
+      this.resultText.set(result.toString());
+    }
+    this.subResultText.set(result.toString());
 
+    this.lastOperator.set(value);
+    this.resultText.set('0');
+    return;
+  }
+
+  private _numberValue(value: INumbers): void {
+    // Si ya hemos dado un resultado y volvemos a presionar un número, reseteamos los valores
+    if (this.lastOperator() === '=') this.resetValues();
     // Limitar cantidad de caracteres
-    if (this.resultText().length > this._limitCharacters)
-      return console.warn('Max length reached');
-
-    //Validar si decimal
-    if (value === '.' && !this.resultText().includes('.'))
-      return this.resultText.update((prev) => prev + value);
-
+    if (this._isOverLimitLength()) return;
     // Evitar el 0 a la izquierda y añadir el valor
-    if (numbers.includes(value))
-      return this.resultText.update((prev) =>
-        prev === '0' || prev === '-0' ? value : prev + value
-      );
+    return this.resultText.update((prev) =>
+      prev === '0' || prev === '-0' ? value : prev + value
+    );
   }
 
   // Retorna el valor de la operación

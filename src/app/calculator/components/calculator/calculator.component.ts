@@ -28,6 +28,8 @@ export class CalculatorComponent {
   public lastOperator = computed(() => this._calculatorSvc.lastOperator());
 
   handleClick(key: string) {
+    // Parseamos el valor de división antes de nada
+    if (key === '÷') key = '/';
     this._calculatorSvc.constructNumber(key);
   }
 
