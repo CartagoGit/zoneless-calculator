@@ -19,6 +19,30 @@ describe('Svc => CalculatorService}', () => {
     expect(service.subResultText()).toBe('');
   });
 
+  it('should advice when an invalid value is passed', () => {
+    const consoleSpy = spyOn(console, 'warn');
+    service.constructNumber('a');
+    expect(consoleSpy).toHaveBeenCalled();
+  });
+
+  it('should not update values when an invalid value is passed', () => {
+    service.constructNumber('a');
+    expect(service.resultText()).toBe('0');
+    expect(service.lastOperator()).toBe('');
+    expect(service.subResultText()).toBe('');
+  });
+
+  it("should reset values when resultText is 'NaN'", () => {
+    const resetValues = spyOn(service, 'resetValues');
+    service.resultText.set('NaN');
+    service.constructNumber('1');
+    expect(resetValues).toHaveBeenCalled();
+
+    service.resultText.set('NaN');
+    service.constructNumber('+');
+    expect(resetValues).toHaveBeenCalled();
+  });
+
   it("should set resultTest to '0' and lastOperator and subResultText to '' when C is pressed", () => {
     service.resultText.set('123');
     service.lastOperator.set('/');

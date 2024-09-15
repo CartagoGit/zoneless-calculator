@@ -21,6 +21,7 @@ export class CalculatorService {
   public constructNumber(value: string): void {
     // Validamos que el valor sea válido
     if (!isPossibleValue(value)) return console.warn('Invalid value: ', value);
+    if (this.resultText() === 'NaN') return this.resetValues();
 
     if (isSpecialOperator(value)) this._specialValue(value);
     else if (isOperator(value)) this._operatorValue(value);
@@ -97,6 +98,7 @@ export class CalculatorService {
     if (isNaN(result)) {
       this.resetValues();
       this.resultText.set(result.toString());
+      return;
     }
     this.subResultText.set(result.toString());
 
