@@ -25,7 +25,6 @@ export class CalculatorService {
     // Si se pulsa C nos da igual lo que haya en pantalla, reseteamos los valores
     if (value === 'C') return this.resetValues();
 
-
     // Si ya hemos dado un resultado y volvemos a presionar un número, reseteamos los valores
     if (numbers.includes(value) && this.lastOperator() === '=')
       this.resetValues();
@@ -46,7 +45,9 @@ export class CalculatorService {
       else if (['*', '/'].some((val) => val === this.lastOperator()))
         return this.resultText.update((result) => (+result / 100).toString());
       else if (['+', '-'].some((val) => val === this.lastOperator()))
-        return this.resultText.set((+this.subResultText() / 100).toString());
+        return this.resultText.update((result) =>
+          ((+this.subResultText() * +result) / 100).toString()
+        );
     }
 
     if (value === '+/-') {
