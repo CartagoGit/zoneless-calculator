@@ -15,11 +15,16 @@ export class CalculatorService {
   private _limitCharacters = 9;
 
   public constructNumber(value: string): void {
-    // Parseamos el valor de división
+    // Parseamos el valor de división antes de nada
     if (value === '÷') value = '/';
 
+    // Validamos que el valor sea correcto
     if (!possibleValues.includes(value))
       return console.warn('Invalid value: ', value);
+
+    // Si se pulsa C nos da igual lo que haya en pantalla, reseteamos los valores
+    if (value === 'C') return this.resetValues();
+
 
     // Si ya hemos dado un resultado y volvemos a presionar un número, reseteamos los valores
     if (numbers.includes(value) && this.lastOperator() === '=')
@@ -33,7 +38,16 @@ export class CalculatorService {
       return;
     }
 
-    if (value === 'C') return this.resetValues();
+    if (value === '%') {
+      // Si no existe un operador, simplemente resetea el resultado
+      if (['', '='].some((val) => val === this.lastOperator()))
+        return this.resultText.set('0');
+      // Si el operador es una multiplicación o división, calculamos el porcentaje
+      else if (['*', '/'].some((val) => val === this.lastOperator()))
+        return this.resultText.update((result) => (+result / 100).toString());
+      else if (['+', '-'].some((val) => val === this.lastOperator()))
+        return this.resultText.set((+this.subResultText() / 100).toString());
+    }
 
     if (value === '+/-') {
       return this.resultText.update((prev) =>
