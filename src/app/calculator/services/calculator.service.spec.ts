@@ -86,11 +86,18 @@ describe('Svc => CalculatorService}', () => {
 
   it('should calculate result correctly for special cases with division with number Zero', () => {
     // Caso 1 - División por 0
+    // Positivo
     service.subResultText.set('5');
     service.lastOperator.set('/');
     service.resultText.set('0');
     service.constructNumber('=');
     expect(service.resultText()).toBe('Infinity');
+    // Negativo
+    service.subResultText.set('-5');
+    service.lastOperator.set('/');
+    service.resultText.set('0');
+    service.constructNumber('=');
+    expect(service.resultText()).toBe('-Infinity');
 
     // Caso 2 - 0 dividido por otro número
     service.subResultText.set('0');
