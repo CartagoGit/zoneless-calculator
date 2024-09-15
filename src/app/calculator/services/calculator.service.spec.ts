@@ -84,6 +84,29 @@ describe('Svc => CalculatorService}', () => {
     expect(service.resultText()).toBe('5');
   });
 
+  it('should calculate result correctly for special cases with division with number Zero', () => {
+    // Caso 1 - División por 0
+    service.subResultText.set('5');
+    service.lastOperator.set('/');
+    service.resultText.set('0');
+    service.constructNumber('=');
+    expect(service.resultText()).toBe('Infinity');
+
+    // Caso 2 - 0 dividido por otro número
+    service.subResultText.set('0');
+    service.lastOperator.set('/');
+    service.resultText.set('5');
+    service.constructNumber('=');
+    expect(service.resultText()).toBe('0');
+
+    // Caso 3 . Divsisión de 0 entre 0
+    service.subResultText.set('0');
+    service.lastOperator.set('/');
+    service.resultText.set('0');
+    service.constructNumber('=');
+    expect(service.resultText()).toBe('NaN');
+  });
+
   it('should handle decimal numbers correctly', () => {
     service.constructNumber('1');
     service.constructNumber('.');
@@ -117,6 +140,10 @@ describe('Svc => CalculatorService}', () => {
     service.constructNumber('backspace');
     expect(service.resultText()).toBe('0');
 
+    service.constructNumber('backspace');
+    expect(service.resultText()).toBe('0');
+
+    service.resultText.set('-0');
     service.constructNumber('backspace');
     expect(service.resultText()).toBe('0');
   });
