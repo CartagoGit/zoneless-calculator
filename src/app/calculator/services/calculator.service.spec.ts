@@ -144,4 +144,69 @@ describe('Svc => CalculatorService}', () => {
     service.constructNumber('=');
     expect(service.resultText()).toBe('3');
   });
+
+  it('should handle percentage correctly with no results', () => {
+    service.constructNumber('1');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('0');
+
+    service.constructNumber('2');
+    service.constructNumber('*');
+    service.constructNumber('1');
+    service.constructNumber('=');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('0');
+  });
+
+  it('should handle percentage correctly with multiplication and division', () => {
+    service.subResultText.set('5');
+    service.lastOperator.set('*');
+    service.resultText.set('100');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('1');
+
+    service.subResultText.set('60');
+    service.lastOperator.set('*');
+    service.resultText.set('50');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('0.5');
+
+    service.subResultText.set('100');
+    service.lastOperator.set('/');
+    service.resultText.set('10');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('0.1');
+
+    service.subResultText.set('101');
+    service.lastOperator.set('/');
+    service.resultText.set('90');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('0.9');
+  });
+
+  it('should handle percentage correctly with addition and subtraction', () => {
+    service.subResultText.set('5');
+    service.lastOperator.set('+');
+    service.resultText.set('100');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('5');
+
+    service.subResultText.set('60');
+    service.lastOperator.set('+');
+    service.resultText.set('50');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('30');
+
+    service.subResultText.set('100');
+    service.lastOperator.set('-');
+    service.resultText.set('10');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('10');
+
+    service.subResultText.set('101');
+    service.lastOperator.set('-');
+    service.resultText.set('90');
+    service.constructNumber('%');
+    expect(service.resultText()).toBe('90.9');
+  });
 });
