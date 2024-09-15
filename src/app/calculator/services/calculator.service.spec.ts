@@ -39,6 +39,22 @@ describe('Svc => CalculatorService}', () => {
     expect(service.resultText()).toBe('12');
   });
 
+  it('should handle ints starting with 0 correctly', () => {
+    service.constructNumber('0');
+    expect(service.resultText()).toBe('0');
+
+    service.constructNumber('1');
+    expect(service.resultText()).toBe('1');
+
+    service.constructNumber('0');
+    expect(service.resultText()).toBe('10');
+
+    service.resultText.set('0');
+    service.constructNumber('0');
+    expect(service.resultText()).toBe('0');
+
+  });
+
   it('should handle operators correctly', () => {
     service.constructNumber('1');
     service.constructNumber('+');
@@ -114,7 +130,7 @@ describe('Svc => CalculatorService}', () => {
     expect(service.resultText()).toBe('NaN');
   });
 
-  it('should handle decimal numbers correctly', () => {
+  it('should handle decimal numbers operations correctly', () => {
     service.constructNumber('1');
     service.constructNumber('.');
     service.constructNumber('2');
@@ -124,6 +140,21 @@ describe('Svc => CalculatorService}', () => {
 
     expect(service.resultText()).toBe('3.2');
   });
+
+  it('should handle input decimal correctly', () => {
+    service.constructNumber('1');
+    service.constructNumber('.');
+    service.constructNumber('.');
+    expect(service.resultText()).toBe('1.');
+
+    service.resultText.set('0');
+    service.constructNumber('.');
+    expect(service.resultText()).toBe('0.');
+
+    service.resultText.set('0.0');
+    service.constructNumber('.');
+    expect(service.resultText()).toBe('0.0');
+  })
 
   it('should handle negative numbers correctly', () => {
     service.constructNumber('1');
