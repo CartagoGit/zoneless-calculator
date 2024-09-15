@@ -31,6 +31,29 @@ describe('Svc => CalculatorService}', () => {
     expect(service.subResultText()).toBe('');
   });
 
+  it('should reset values when a number is pressed after a result', () => {
+    service.resultText.set('123');
+    service.lastOperator.set('=');
+
+    service.constructNumber('1');
+
+    expect(service.resultText()).toBe('1');
+    expect(service.lastOperator()).toBe('');
+    expect(service.subResultText()).toBe('');
+  });
+
+  it('should reset values with the methos to resetValues', () => {
+    service.resultText.set('123');
+    service.lastOperator.set('/');
+    service.subResultText.set('456');
+
+    service.resetValues();
+
+    expect(service.resultText()).toBe('0');
+    expect(service.lastOperator()).toBe('');
+    expect(service.subResultText()).toBe('');
+  });
+
   it('should update resultText with the number pressed', () => {
     service.constructNumber('1');
     expect(service.resultText()).toBe('1');
@@ -52,7 +75,6 @@ describe('Svc => CalculatorService}', () => {
     service.resultText.set('0');
     service.constructNumber('0');
     expect(service.resultText()).toBe('0');
-
   });
 
   it('should handle operators correctly', () => {
@@ -154,7 +176,7 @@ describe('Svc => CalculatorService}', () => {
     service.resultText.set('0.0');
     service.constructNumber('.');
     expect(service.resultText()).toBe('0.0');
-  })
+  });
 
   it('should handle negative numbers correctly', () => {
     service.constructNumber('1');
