@@ -32,15 +32,28 @@ describe('Svc => CalculatorService}', () => {
     expect(service.subResultText()).toBe('');
   });
 
-  it("should reset values when resultText is 'NaN'", () => {
-    const resetValues = spyOn(service, 'resetValues');
-    service.resultText.set('NaN');
-    service.constructNumber('1');
-    expect(resetValues).toHaveBeenCalled();
+  it('should asign the final result when = is pressed', () => {
+    const _assignFinalResult = spyOn(
+      service,
+      <keyof CalculatorService>'_assignFinalResult'
+    );
+    service.subResultText.set('5');
+    service.lastOperator.set('+');
+    service.resultText.set('5');
 
-    service.resultText.set('NaN');
-    service.constructNumber('+');
-    expect(resetValues).toHaveBeenCalled();
+    service.constructNumber('=');
+
+    expect(_assignFinalResult).toHaveBeenCalled();
+  });
+
+  it('should assing the final result when NaN is in the result', () => {
+    service.constructNumber('0');
+    service.constructNumber('/');
+    service.constructNumber('0');
+    service.constructNumber('*');
+    expect(service.resultText()).toBe('NaN');
+    expect(service.lastOperator()).toBe('=');
+    expect(service.subResultText()).toBe('');
   });
 
   it("should set resultTest to '0' and lastOperator and subResultText to '' when C is pressed", () => {

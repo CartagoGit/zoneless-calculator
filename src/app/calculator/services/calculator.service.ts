@@ -21,7 +21,7 @@ export class CalculatorService {
   public constructNumber(value: string): void {
     // Validamos que el valor sea válido
     if (!isPossibleValue(value)) return console.warn('Invalid value: ', value);
-    if (this.resultText() === 'NaN') return this.resetValues();
+    // if (this.resultText() === 'NaN') return this.resetValues();
 
     if (isSpecialOperator(value)) this._specialValue(value);
     else if (isOperator(value)) this._operatorValue(value);
@@ -40,13 +40,7 @@ export class CalculatorService {
     // Si se pulsa C nos da igual lo que haya en pantalla, reseteamos los valores
     if (value === 'C') return this.resetValues();
 
-    if (value === '=') {
-      if (this.lastOperator() === '' || this.lastOperator() === '=') return;
-      this.resultText.set(this._calculateResult().toString());
-      this.subResultText.set('');
-      this.lastOperator.set('=');
-      return;
-    }
+    if (value === '=') return this._assignFinalResult();
 
     if (value === '%') {
       // Si no existe un operador, simplemente resetea el resultado
@@ -95,11 +89,10 @@ export class CalculatorService {
       return;
     }
     const result = this._calculateResult();
-    if (isNaN(result)) {
-      this.resetValues();
-      this.resultText.set(result.toString());
-      return;
-    }
+
+    // Si el resultado es NaN, reseteamos los valores y damos el valor final como NaN
+    if (isNaN(result)) return this._assignFinalResult(result);
+
     this.subResultText.set(result.toString());
 
     this.lastOperator.set(value);
@@ -134,6 +127,16 @@ export class CalculatorService {
 
     // Evitamos el deprecamiento de punto flotante de js
     return parseFloat(result.toFixed(this._limitCharacters));
+  }
+
+  private _assignFinalResult(result?: number): void {
+    if (this.lastOperator() === '' || this.lastOperator() === '=') return;
+    // Si no se ha recibido el resultado, lo calculamos
+    if (!result) result = this._calculateResult();
+    this.resultText.set(result.toString());
+    this.subResultText.set('');
+    this.lastOperator.set('=');
+    return;
   }
 
   // Resetea los valores
