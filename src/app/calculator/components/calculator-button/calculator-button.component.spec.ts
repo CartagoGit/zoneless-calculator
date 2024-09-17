@@ -36,4 +36,10 @@ describe('CalculatorButtonComponent', () => {
     expect(hostClasses).toContain('is-double-size');
     expect(component.isDoubleSize()).toBe(true);
   });
+
+  it('should emit when click on button', () => {
+    component.handleClick();
+    spyOn(component.onClick, 'emit');
+    expect(component.onClick.emit).toHaveBeenCalled();
+  });
 });
