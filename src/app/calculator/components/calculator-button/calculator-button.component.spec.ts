@@ -38,8 +38,8 @@ describe('CalculatorButtonComponent', () => {
   });
 
   it('should emit when click on button', () => {
-    component.handleClick();
     spyOn(component.onClick, 'emit');
+    component.handleClick();
     expect(component.onClick.emit).toHaveBeenCalled();
   });
 });
