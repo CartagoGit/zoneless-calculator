@@ -42,12 +42,8 @@ export class CalculatorButtonComponent {
   });
 
   handleClick() {
-    console.log('asdsadd');
     const content = this.contentValue()?.nativeElement.innerText.trim();
-
-    console.log('01231223');
     this.onClick.emit(content ?? '');
-    console.log('0123122323');
   }
 
   keyboardPressedStyle(key: string) {

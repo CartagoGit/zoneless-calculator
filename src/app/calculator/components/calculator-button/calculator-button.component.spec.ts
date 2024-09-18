@@ -43,12 +43,13 @@ describe('CalculatorButtonComponent', () => {
     expect(component.onClick.emit).toHaveBeenCalled();
   });
 
-  // it("should set isPressed to true when keyboardPressedStyle is called with the button's content", () => {
-  //   component.contentValue()!.nativeElement.innerText = '1';
-  //   component.keyboardPressedStyle('1');
-  //   expect(component.isPressed()).toBe(true);
-  //   setTimeout(() => {
-  //     expect(component.isPressed()).toBe(false);
-  //   }, 101);
-  // });
+  it("should set isPressed to true when keyboardPressedStyle is called with the button's content", (done) => {
+    component.contentValue()!.nativeElement.innerText = '1';
+    component.keyboardPressedStyle('1');
+    expect(component.isPressed()).toBe(true);
+    setTimeout(() => {
+      expect(component.isPressed()).toBe(false);
+      done()
+    }, 101);
+  });
 });
