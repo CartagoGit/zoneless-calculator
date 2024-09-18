@@ -1,4 +1,3 @@
-import { signal, input } from '@angular/core';
 import { CalculatorButtonComponent } from './calculator-button.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -38,8 +37,18 @@ describe('CalculatorButtonComponent', () => {
   });
 
   it('should emit when click on button', () => {
+    // component.contentValue()!.nativeElement.innerText = '';
     spyOn(component.onClick, 'emit');
     component.handleClick();
     expect(component.onClick.emit).toHaveBeenCalled();
   });
+
+  // it("should set isPressed to true when keyboardPressedStyle is called with the button's content", () => {
+  //   component.contentValue()!.nativeElement.innerText = '1';
+  //   component.keyboardPressedStyle('1');
+  //   expect(component.isPressed()).toBe(true);
+  //   setTimeout(() => {
+  //     expect(component.isPressed()).toBe(false);
+  //   }, 101);
+  // });
 });
