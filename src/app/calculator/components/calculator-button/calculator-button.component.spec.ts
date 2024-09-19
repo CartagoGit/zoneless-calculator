@@ -77,4 +77,18 @@ describe('CalculatorButtonComponent', () => {
     expect(compiled.querySelector('button')?.children).toHaveSize(1); // solo tiene un hijo
     expect(compiled.querySelector('button')?.children[0].tagName).toBe('SPAN'); // el hijo es un span
   });
+
+  it("should be escape when there arent content in the button's content", () => {
+    component.contentValue()!.nativeElement.innerText = '';
+    component.keyboardPressedStyle('1');
+    expect(component.isPressed()).toBe(false);
+
+    component.contentValue()!.nativeElement.innerText = '';
+    component.keyboardPressedStyle('');
+    expect(component.isPressed()).toBe(false);
+
+    component.contentValue()!.nativeElement.innerText = '1';
+    component.keyboardPressedStyle('1');
+    expect(component.isPressed()).toBe(true);
+  })
 });
