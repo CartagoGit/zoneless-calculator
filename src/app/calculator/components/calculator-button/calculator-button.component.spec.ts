@@ -7,7 +7,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
   standalone: true,
   template: `
     <calculator-button>
-      <soan>contenido proyectado</span>
+      <span>
+        contenido proyectado
+      </span>
     </calculator-button>
   `,
 })
@@ -67,8 +69,12 @@ describe('CalculatorButtonComponent', () => {
 
   it('should display the projected content', () => {
     const hostComponentFixture = TestBed.createComponent(TestHostComponent);
-    expect(hostComponentFixture.querySelector('span')?.textContent).toBe(
-      'contenido proyectado'
+    const compiled = hostComponentFixture.nativeElement as HTMLDivElement;
+
+    expect(compiled.querySelector('button')?.innerText).toBe(
+      `contenido proyectado`
     );
+    expect(compiled.querySelector('button')?.children).toHaveSize(1); // solo tiene un hijo
+    expect(compiled.querySelector('button')?.children[0].tagName).toBe('SPAN'); // el hijo es un span
   });
 });
