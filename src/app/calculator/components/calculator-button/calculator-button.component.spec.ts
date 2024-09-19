@@ -1,5 +1,17 @@
+import { Component } from '@angular/core';
 import { CalculatorButtonComponent } from './calculator-button.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+@Component({
+  imports: [CalculatorButtonComponent],
+  standalone: true,
+  template: `
+    <calculator-button>
+      <soan>contenido proyectado</span>
+    </calculator-button>
+  `,
+})
+class TestHostComponent {}
 
 describe('CalculatorButtonComponent', () => {
   let fixture: ComponentFixture<CalculatorButtonComponent>;
@@ -49,7 +61,14 @@ describe('CalculatorButtonComponent', () => {
     expect(component.isPressed()).toBe(true);
     setTimeout(() => {
       expect(component.isPressed()).toBe(false);
-      done()
+      done();
     }, 101);
+  });
+
+  it('should display the projected content', () => {
+    const hostComponentFixture = TestBed.createComponent(TestHostComponent);
+    expect(hostComponentFixture.querySelector('span')?.textContent).toBe(
+      'contenido proyectado'
+    );
   });
 });
