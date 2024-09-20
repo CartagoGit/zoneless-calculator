@@ -27,6 +27,16 @@ export class CalculatorComponent {
   public subResultText = computed(() => this._calculatorSvc.subResultText());
   public lastOperator = computed(() => this._calculatorSvc.lastOperator());
 
+  private _keyDictionary: Record<string, string> = {
+    escape: 'C',
+    clear: 'C',
+    c: 'C',
+    enter: '=',
+    x: '*',
+    ',': '.',
+    '/': '÷',
+  };
+
   handleClick(key: string) {
     // Parseamos el valor de división antes de nada
     if (key === '÷') key = '/';
@@ -36,16 +46,7 @@ export class CalculatorComponent {
   handleKeyboardEvent(event: KeyboardEvent) {
     event.preventDefault();
     const key = event.key.toLowerCase();
-    const keyDictionary: Record<string, string> = {
-      escape: 'C',
-      clear: 'C',
-      c: 'C',
-      enter: '=',
-      x: '*',
-      ',': '.',
-      '/': '÷',
-    };
-    const keyEquivalent = keyDictionary[key] ?? key;
+    const keyEquivalent = this._keyDictionary[key] ?? key;
     this.handleClick(keyEquivalent);
     this.calculatorButtons().forEach((button) => {
       button.keyboardPressedStyle(keyEquivalent);
